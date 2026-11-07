@@ -111,6 +111,17 @@ static void publish_discovery(void)
              s_prefix, s_hostname, s_prefix, s_hostname, s_hostname);
     esp_mqtt_client_publish(s_client, topic, payload, 0, 1, 1);
 
+    /* 传感器：当前 IP（诊断类） */
+    snprintf(topic, sizeof(topic), "homeassistant/sensor/%s/ip/config", s_hostname);
+    snprintf(payload, sizeof(payload),
+             "{\"name\":\"IP Address\",\"state_topic\":\"%s/tele/ip\","
+             "\"entity_category\":\"diagnostic\",\"icon\":\"mdi:ip-network\","
+             "\"unique_id\":\"%s_ip\",\"availability_topic\":\"%s/status\","
+             "\"device\":{\"identifiers\":[\"%s\"],\"name\":\"ESP32-CAM %s\","
+             "\"model\":\"ESP32-CAM\",\"manufacturer\":\"AI-Thinker\"}}",
+             s_prefix, s_hostname, s_prefix, s_hostname, s_hostname);
+    esp_mqtt_client_publish(s_client, topic, payload, 0, 1, 1);
+
     /* 按钮：重启 */
     snprintf(topic, sizeof(topic), "homeassistant/button/%s/reboot/config", s_hostname);
     snprintf(payload, sizeof(payload),
@@ -144,6 +155,12 @@ static void publish_telemetry(void)
     snprintf(topic, sizeof(topic), "%s/tele/uptime", s_prefix);
     snprintf(val, sizeof(val), "%lld", (long long)(esp_timer_get_time() / 1000000));
     esp_mqtt_client_publish(s_client, topic, val, 0, 0, 0);
+
+    char ip[16] = "";
+    if (wifi_mgr_get_sta_ip(ip, sizeof(ip)) == ESP_OK) {
+        snprintf(topic, sizeof(topic), "%s/tele/ip", s_prefix);
+        esp_mqtt_client_publish(s_client, topic, ip, 0, 0, 0);
+    }
 }
 
 static void telemetry_task(void *arg)

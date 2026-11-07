@@ -46,10 +46,12 @@ HTTP 明文，WiFi 密码会明文过那段链路（已确认接受该取舍）�
 | `<prefix>/tele/heap` | 发布 | 空闲堆（B，60s 周期） |
 | `<prefix>/tele/rssi` | 发布 | WiFi 信号（dBm） |
 | `<prefix>/tele/uptime` | 发布 | 运行时长（s） |
+| `<prefix>/tele/ip` | 发布 | 当前局域网 IP |
 | `<prefix>/cmd/reboot` | 订阅 | 收到即重启 |
 
 上电后自动向 `homeassistant/...` 发布 **HA MQTT Discovery**，HA 会自动创建：
-`Free Heap`、`WiFi RSSI`、`Uptime` 三个传感器 + `Reboot` 按钮。
+`Free Heap`、`WiFi RSSI`、`Uptime`、`IP Address` 四个传感器 + `Reboot` 按钮。
+串口每 60 秒也会打印一次 `当前 IP: x.x.x.x`。
 
 > MJPEG 摄像头实体需要手动在 HA 添加 `mjpeg` 集成：
 > - MJPEG stream URL：`http://esp32cam-xxxx.local:81/stream`

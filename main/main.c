@@ -65,7 +65,16 @@ void app_main(void)
 
     xTaskCreate(app_task, "app", 4096, NULL, 5, NULL);
 
+    /* 周期打印 STA IP：获取 IP 时只打印一次，串口晚接入或 MQTT 未配置时也能查到 */
+    uint32_t sec = 0;
     while (1) {
         vTaskDelay(pdMS_TO_TICKS(1000));
+        if (++sec % 60 == 0 && wifi_mgr_get_state() == WIFI_MGR_STATE_CONNECTED) {
+            char ip[16] = "";
+            char hostname[32] = "";
+            wifi_mgr_get_sta_ip(ip, sizeof(ip));
+            wifi_mgr_get_hostname(hostname, sizeof(hostname));
+            ESP_LOGI(TAG, "当前 IP: %s (%s.local)", ip, hostname);
+        }
     }
 }

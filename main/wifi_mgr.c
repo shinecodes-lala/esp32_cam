@@ -89,6 +89,9 @@ static esp_err_t connect_sta(const char *ssid, const char *pass)
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &cfg));
     ESP_ERROR_CHECK(esp_wifi_start());
+    /* 关闭 Modem Sleep：默认省电模式下射频按信标周期休眠，MJPEG 实测 ping 均值 ~290ms、峰值 >1s。
+     * 摄像头常插电，多耗 ~20-30mA 可接受。 */
+    ESP_ERROR_CHECK(esp_wifi_set_ps(WIFI_PS_NONE));
     set_state(WIFI_MGR_STATE_CONNECTING);
     return ESP_OK;
 }

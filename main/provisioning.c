@@ -173,7 +173,7 @@ static esp_err_t root_get_handler(httpd_req_t *req)
     }
     snprintf(html, need, HTML_FORM, e_ssid, e_host, (unsigned)port, e_user, e_prefix);
 
-    httpd_resp_set_type(req, "text/html");
+    httpd_resp_set_type(req, "text/html; charset=utf-8");
     esp_err_t err = httpd_resp_send(req, html, strlen(html));
     free(html);
     return err;
@@ -227,7 +227,7 @@ static esp_err_t root_post_handler(httpd_req_t *req)
     html_escape(ssid, e_ssid, sizeof(e_ssid));
     char ok[512];
     snprintf(ok, sizeof(ok), HTML_OK_TEMPLATE, e_ssid);
-    httpd_resp_set_type(req, "text/html");
+    httpd_resp_set_type(req, "text/html; charset=utf-8");
     httpd_resp_send(req, ok, strlen(ok));
 
     /* 延迟切 STA，确保响应先被客户端收到 */
